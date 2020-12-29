@@ -14,13 +14,13 @@ public class MovieDBResponse implements Parcelable
     @SerializedName("page")
     @Expose
     private Integer page;
-    @SerializedName("Movies")
+    @SerializedName("results")
     @Expose
     private List<Movie> Movies = null;
     @SerializedName("total_pages")
     @Expose
     private Integer totalPages;
-    @SerializedName("total_Movies")
+    @SerializedName("total_results")
     @Expose
     private Integer totalMovies;
     public final static Parcelable.Creator<MovieDBResponse> CREATOR = new Creator<MovieDBResponse>() {
