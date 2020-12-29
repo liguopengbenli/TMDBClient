@@ -37,8 +37,8 @@ public class MovieDBResponse implements Parcelable
             return (new MovieDBResponse[size]);
         }
 
-    }
-            ;
+    };
+
 
     protected MovieDBResponse(Parcel in) {
         this.page = ((Integer) in.readValue((Integer.class.getClassLoader())));
