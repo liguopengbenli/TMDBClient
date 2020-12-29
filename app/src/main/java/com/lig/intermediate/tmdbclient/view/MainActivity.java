@@ -1,13 +1,17 @@
 package com.lig.intermediate.tmdbclient.view;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 
 import com.lig.intermediate.tmdbclient.R;
+import com.lig.intermediate.tmdbclient.model.Movie;
 import com.lig.intermediate.tmdbclient.model.MovieDBResponse;
 import com.lig.intermediate.tmdbclient.service.MovieDataService;
 import com.lig.intermediate.tmdbclient.service.RetrofitInstance;
+
+import java.util.ArrayList;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -20,6 +24,10 @@ import retrofit2.Response;
 * */
 
 public class MainActivity extends AppCompatActivity {
+
+    private ArrayList<Movie> movies;
+    private RecyclerView recyclerView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +46,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<MovieDBResponse> call, Response<MovieDBResponse> response) {
                 MovieDBResponse movieDBResponse = response.body();
+
+                if(movieDBResponse!=null && movieDBResponse.getMovies()!=null){
+                    movies = (ArrayList<Movie>) movieDBResponse.getMovies();
+                    showInRecycleView();
+
+                }
             }
 
             @Override
@@ -45,6 +59,11 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+    }
+
+    private void showInRecycleView() {
+        recyclerView = (RecyclerView)findViewById(R.id.rvMovies);
 
     }
 
