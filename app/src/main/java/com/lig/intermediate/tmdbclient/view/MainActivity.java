@@ -1,11 +1,15 @@
 package com.lig.intermediate.tmdbclient.view;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 
 import com.lig.intermediate.tmdbclient.R;
+import com.lig.intermediate.tmdbclient.adapter.MovieAdapter;
 import com.lig.intermediate.tmdbclient.model.Movie;
 import com.lig.intermediate.tmdbclient.model.MovieDBResponse;
 import com.lig.intermediate.tmdbclient.service.MovieDataService;
@@ -27,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
 
     private ArrayList<Movie> movies;
     private RecyclerView recyclerView;
+    private MovieAdapter movieAdapter;
 
 
     @Override
@@ -64,6 +69,17 @@ public class MainActivity extends AppCompatActivity {
 
     private void showInRecycleView() {
         recyclerView = (RecyclerView)findViewById(R.id.rvMovies);
+        movieAdapter = new MovieAdapter(this, movies);
+
+        if(this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
+            recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        }else {
+            recyclerView.setLayoutManager(new GridLayoutManager(this, 4));
+        }
+
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(movieAdapter);
+        movieAdapter.notifyDataSetChanged();
 
     }
 
