@@ -20,11 +20,8 @@ import com.lig.intermediate.tmdbclient.model.Movie;
 
 public class MovieActivity extends AppCompatActivity {
     private Movie movie;
-
     private ImageView movieImage;
-
     private String image;
-
     private TextView movieTitle, moviesSynopsis, movieRating, movieReleaseDate;
 
     @Override

@@ -1,6 +1,8 @@
 package com.lig.intermediate.tmdbclient.view;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -10,6 +12,7 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 
 import com.lig.intermediate.tmdbclient.R;
+import com.lig.intermediate.tmdbclient.ViewModel.MainActivityViewModel;
 import com.lig.intermediate.tmdbclient.adapter.MovieAdapter;
 import com.lig.intermediate.tmdbclient.model.Movie;
 import com.lig.intermediate.tmdbclient.model.MovieDBResponse;
@@ -17,6 +20,7 @@ import com.lig.intermediate.tmdbclient.service.MovieDataService;
 import com.lig.intermediate.tmdbclient.service.RetrofitInstance;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
@@ -45,14 +49,17 @@ public class MainActivity extends AppCompatActivity {
     private SwipeRefreshLayout swipeRefreshLayout;
     private Observable<MovieDBResponse> movieDBResponseObservable;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
+    private MainActivityViewModel mainActivityViewModel;
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         getSupportActionBar().setTitle("TMDB popular Movies Today");
+
+        mainActivityViewModel = new ViewModelProvider(this).get(MainActivityViewModel.class);
         getPopularMoviesRx();
 
         swipeRefreshLayout = findViewById(R.id.swiperefresh);
@@ -90,7 +97,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void getPopularMoviesRx(){
-        MovieDataService movieDataService = RetrofitInstance.getService();
+        mainActivityViewModel.getAllMovies().observe(this, new Observer<List<Movie>>() {
+            @Override
+            public void onChanged(List<Movie> moviesList) {
+                movies = (ArrayList<Movie>) moviesList;
+                showInRecycleView();
+
+            }
+        });
+
+        /*MovieDataService movieDataService = RetrofitInstance.getService();
         movieDBResponseObservable = movieDataService.getPopularMoviesWithRx(this.getString(R.string.api_key));
         compositeDisposable.add(
         movieDBResponseObservable.subscribeOn(Schedulers.io())
@@ -123,9 +139,7 @@ public class MainActivity extends AppCompatActivity {
                                          showInRecycleView();
 
                                      }
-                                 }));
-
-
+                                 }));*/
     }
 
     private void showInRecycleView() {
@@ -146,8 +160,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        compositeDisposable.clear();
-
+        //compositeDisposable.clear();
+        mainActivityViewModel.clear();
         /*if(call != null){
             if(call.isExecuted()){
                 call.cancel();
